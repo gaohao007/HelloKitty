@@ -1,0 +1,16 @@
+{
+  "string": [
+    {
+      "name": "module_desc",
+      "value": "module description"
+    },
+    {
+      "name": "EntryAbility_desc",
+      "value": "威力克商城1.0"
+    },
+    {
+      "name": "EntryAbility_label",
+      "value": "Wilikoo"
+    }
+  ]
+}
