@@ -2,12 +2,16 @@
 import { getRandomProducts } from "../../Api/products"
 import { ProductItems, Products, TabClass } from "../../model"
 import { Log } from "@abner/log"
-import { GoodCard } from ".."
+import { GoodCard } from "./.."
+import { promptAction, router } from "@kit.ArkUI"
+import { PerferenceHelpe } from "../../utils"
 
 
 @Preview
 @Component
 export struct Mine{
+
+  userSetting:PerferenceHelpe = new PerferenceHelpe(getContext(this))
 
   @State tabsData:TabClass[]=[
     {
@@ -59,21 +63,29 @@ export struct Mine{
     },
   ]
 
+  @State isLogin:boolean=true
+
+  user_id:number=0
+
   @State
     products:ProductItems[]=[]
-    aboutToAppear() {
+    async aboutToAppear() {
      this.getProducts()
-
+     const user_id = await this.userSetting.getUserID()
+      this.user_id = user_id
+      if (user_id === 0){
+        //该用户未登录
+        this.isLogin=false
+      }else {
+      //   用户登录
+        this.isLogin=true
+      }
   }
 
-  aboutToDisappear() {
-        this.products = []
-  }
   // 获取猜你喜欢的商品
   async  getProducts(){
     const res =await getRandomProducts() as Products
     this.products = res.items
-    Log.info(JSON.stringify(this.products))
   }
 
 
@@ -90,14 +102,28 @@ export struct Mine{
           Text('未登录/请登录')
             .fontSize(20)
             .fontWeight(600)
-          Row({space:10}){
-            Image($r("app.media.local_fill"))
-              .width(15).aspectRatio(1)
-              .fillColor($r("app.color.text_secondary"))
+            .onClick(()=>{
+              if (!this.isLogin) {
+                router.pushUrl({url:"pages/login/Login"})
+              }
+            })
 
-            Text('收货地址 >')
-              .fontSize(12)
-              .fontColor($r("app.color.text_secondary"))
+          if (this.isLogin){
+            Row({space:10}){
+              Image($r("app.media.local_fill"))
+                .width(15).aspectRatio(1)
+                .fillColor($r("app.color.text_secondary"))
+
+              Text('收货地址 >')
+                .fontSize(12)
+                .fontColor($r("app.color.text_secondary"))
+            }.margin({top:5})
+            .onClick(()=>{
+                    router.pushUrl({url:"pages/address/Address",
+                    params:{
+                      id:this.user_id
+                    }})
+            })
           }
 
         }
@@ -121,6 +147,14 @@ export struct Mine{
     }.width("100%")
     .alignItems(VerticalAlign.Top)
     .justifyContent(FlexAlign.SpaceBetween)
+    .onClick(()=>{
+      if (this.isLogin) {
+        router.pushUrl({url:"pages/setting/Setting"})
+      }else {
+        promptAction.showToast({message:"请你先登录!",alignment:Alignment.Center})
+        router.pushUrl({url:"pages/login/Login"})
+      }
+    })
 
   }
 
@@ -169,18 +203,35 @@ export struct Mine{
         .color($r("app.color.background_divider"))
         .strokeWidth(6)
         .width('100%')
-    Text('猜你喜欢 ❤').width('100%')
+    Row(){
+        Text('猜你喜欢 ❤')
+       Row({space:5}){
+         Image($r("app.media.shuaxin")).height(20).aspectRatio(1)
+         Text('刷新一下')
+           .fontColor($r("app.color.text_secondary"))
+           .fontSize(14)
+       }
+       .onClick(async ()=>{
+         this.products=[]
+         await this.getProducts()
+       })
+    }.width('100%')
+    .justifyContent(FlexAlign.SpaceBetween)
       .margin({top:10})
       Divider()
         .color($r("app.color.background_divider"))
         .strokeWidth(4)
-      List(){
-        ForEach(this.products,(items:ProductItems,index:number)=>{
-          GoodCard({products:items})
-        })
-      }.width('100%')
-      .layoutWeight(1)
-
+        List({space:10}){
+          ForEach(this.products,(productitem:ProductItems,index:number)=>{
+            ListItem(){
+              GoodCard({products:productitem})
+            }
+            .backgroundColor($r("app.color.white"))
+          })
+        }.width('100%')
+        .backgroundColor($r("app.color.background_page"))
+        .layoutWeight(1)
+        .margin({bottom:10})
     }.height('100%')
     .padding({left:20,right:20,top:15})
   }

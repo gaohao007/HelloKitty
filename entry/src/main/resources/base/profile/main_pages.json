@@ -1,6 +1,11 @@
 {
   "src": [
     "pages/Index",
-    "pages/Start/Start"
+    "pages/Start/Start",
+    "pages/setting/Setting",
+    "pages/login/Login",
+    "pages/Register/register",
+    "pages/Use/User",
+    "pages/Address/Address"
   ]
 }

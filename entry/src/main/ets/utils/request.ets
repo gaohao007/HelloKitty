@@ -2,20 +2,34 @@
 import { http } from "@kit.NetworkKit";
 import { ResponseDate } from "../model";
 import { promptAction, router } from "@kit.ArkUI";
+import { PerferenceHelpe } from ".";
+import { Log } from "@abner/log";
+import { COOKIE } from "../constans";
 
+function dealwithcookie(str:string){
+  if (str.indexOf(';') !=-1) {
+    return str.split(';')[0]
+  }
+  return ''
+}
 
+class cookie{
+  cookie:string=''
+}
 
 export  class  Request_API{
 
   static readonly baseUrl:string ="http://10.0.2.2:5000/"
 
   static async request<T>(url:string="",data?:object,method:http.RequestMethod=http.RequestMethod.GET):Promise<T>{
+    console.log('------->apspaspapsaAPPSTR',JSON.stringify(AppStorage.get(COOKIE)))
     const  httpRequest = http.createHttp()
     const config:http.HttpRequestOptions ={
       method:method,
       readTimeout:10000,
       header: {
         "Content-Type": "application/json", //指定数据的格式,
+        "Cookie":AppStorage.get(COOKIE)||""
       },
       extraData:method === http.RequestMethod.GET?  "":data
     }
@@ -25,7 +39,6 @@ export  class  Request_API{
       if (data && Object.keys(data).length) {
         let arr:string[]=[]
         for (let i=0;i<Object.keys(data).length;i++) {
-
           let key = Object.keys(data)[i]
           // 防止空值
           if (data[key]) {
@@ -41,14 +54,23 @@ export  class  Request_API{
     try {
       // 3. 发送请求
       const res = await httpRequest.request(urlStr, config)
+      if (res.header["set-cookie"]){
+        const res1 = res.header["set-cookie"][0] as string
+        if (res1.indexOf(';') !==-1) {
+         const res2= res1.split(';')[0]
+          AppStorage.setOrCreate(COOKIE,res2)
+        }
+      }
+
       // 4. 解析响应
       if (res.responseCode === 401) {
         AlertDialog.show({message:"未授权或Token失效"})
         //   需要将本地token清除
+        new PerferenceHelpe(getContext()).setUserID(0)
         return Promise.reject(new Error("未授权或Token失效"))
       } else if (res.responseCode === 404) {
-        AlertDialog.show({message:"请求的地址不存在"})
-        return Promise.reject(new Error("未授权或Token失效"))
+            AlertDialog.show({message:"请求的地址不存在"})
+            return Promise.reject(new Error("未授权或Token失效"))
       } else if(res.responseCode === 200) {
         const result = JSON.parse(res.result as string) as ResponseDate<T>
         if (result.code ===200) {

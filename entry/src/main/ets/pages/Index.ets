@@ -1,6 +1,7 @@
-import { Mine } from '../component'
+
 import { APP_BOTTOM_HEIGHT, APP_TOP_HEIGHT } from '../constans'
 import { TabClass } from '../model'
+import { Mine } from '../component/My/Mine'
 
 
 @Entry

@@ -16,7 +16,7 @@ struct Start {
     this.adObj = await this.adverSetting.getAdvertiseData()
   }
   build() {
-    Stack({alignContent:Alignment.BottomEnd}){
+    Stack({alignContent:Alignment.TopEnd}){
       Swiper(){
         ForEach(this.adObj.items,(item:Advertiseitem,index:number)=>{
           Image(BASE_URL+"/"+item.image)
@@ -25,15 +25,16 @@ struct Start {
         })
       }.width('100%')
       .layoutWeight(1)
-      Text(`跳转`)
+      Text(`跳过`)
         .borderRadius(15)
         .backgroundColor($r("app.color.white"))
-        .opacity(.75)
+        .opacity(.65)
         .padding(10)
         .margin({right:20,bottom:this.adToBottom})
         .onClick(()=>{
           window.findWindow(ADVERTISE_WINDOW_NAME).destroyWindow()
         })
+        .margin({top:20,right:20})
     }.width('100%')
     .height('100%')
     .padding({top:AppStorage.get(APP_TOP_HEIGHT) as number,bottom:AppStorage.get(APP_BOTTOM_HEIGHT) as number})
