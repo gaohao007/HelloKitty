@@ -1,10 +1,11 @@
 
 import { getRandomProducts } from "../../Api/products"
-import { ProductItems, Products, TabClass } from "../../model"
-import { Log } from "@abner/log"
+import { ProductItems, Products, TabClass, UserInfo, UserInfoModel } from "../../model"
 import { GoodCard } from "./.."
 import { promptAction, router } from "@kit.ArkUI"
 import { PerferenceHelpe } from "../../utils"
+import { getUserInfo } from "../../Api/user"
+import { BASE_URL } from "../../constans"
 
 
 @Preview
@@ -12,6 +13,9 @@ import { PerferenceHelpe } from "../../utils"
 export struct Mine{
 
   userSetting:PerferenceHelpe = new PerferenceHelpe(getContext(this))
+  @State
+      userInfo:UserInfo = new UserInfoModel({} as UserInfo)
+
 
   @State tabsData:TabClass[]=[
     {
@@ -37,7 +41,6 @@ export struct Mine{
       icon:$r("app.media.pinjia")
     },
   ]
-
   @State orrtabsData:TabClass[]=[
     {
       title:"商品收藏",
@@ -62,16 +65,13 @@ export struct Mine{
       icon:$r("app.media.tuikuan")
     },
   ]
-
   @State isLogin:boolean=true
-
   user_id:number=0
-
   @State
     products:ProductItems[]=[]
     async aboutToAppear() {
      this.getProducts()
-     const user_id = await this.userSetting.getUserID()
+      const user_id = await this.userSetting.getUserID()
       this.user_id = user_id
       if (user_id === 0){
         //该用户未登录
@@ -79,6 +79,9 @@ export struct Mine{
       }else {
       //   用户登录
         this.isLogin=true
+        const res = await getUserInfo(user_id)
+        this.userInfo= res
+        await new PerferenceHelpe(getContext(this)).setUserInfo(res)
       }
   }
 
@@ -88,18 +91,16 @@ export struct Mine{
     this.products = res.items
   }
 
-
-
   @Builder
   displayIcon(){
     Row({}){
       Row({space:10}){
-        Image($r("app.media.touxiang"))
+        Image(this.isLogin?BASE_URL+"/"+this.userInfo.avatar:$r("app.media.touxiang"))
           .width(30)
           .aspectRatio(1)
           .borderRadius(13)
         Column(){
-          Text('未登录/请登录')
+          Text(this.userInfo.username ||"未登录/请先登录")
             .fontSize(20)
             .fontWeight(600)
             .onClick(()=>{
@@ -113,16 +114,12 @@ export struct Mine{
               Image($r("app.media.local_fill"))
                 .width(15).aspectRatio(1)
                 .fillColor($r("app.color.text_secondary"))
-
               Text('收货地址 >')
                 .fontSize(12)
                 .fontColor($r("app.color.text_secondary"))
             }.margin({top:5})
             .onClick(()=>{
-                    router.pushUrl({url:"pages/address/Address",
-                    params:{
-                      id:this.user_id
-                    }})
+                    router.pushUrl({url:"pages/Address/Address" })
             })
           }
 
@@ -130,7 +127,7 @@ export struct Mine{
         .alignItems(HorizontalAlign.Start)
       }
 
-
+    Blank()
       Button(){
         Row({space:10}){
           Image($r("app.media.setting"))
@@ -146,7 +143,6 @@ export struct Mine{
       .border({width:1,color:$r("app.color.text_secondary")})
     }.width("100%")
     .alignItems(VerticalAlign.Top)
-    .justifyContent(FlexAlign.SpaceBetween)
     .onClick(()=>{
       if (this.isLogin) {
         router.pushUrl({url:"pages/setting/Setting"})

@@ -1,7 +1,7 @@
 import { Context } from "@kit.AbilityKit"
 import { preferences } from "@kit.ArkData"
-import { ADVERTISEMNET_KEY, ADVERTISE_KEY, COOKIE, USER_ID } from "../constans"
-import { AdvertiseData, AdvertiseDataModel, AdvertiseitemModel } from "../model"
+import { ADDRESSID, ADVERTISEMNET_KEY, ADVERTISE_KEY, COOKIE, USER_ID, USER_INFO } from "../constans"
+import { AdvertiseData, AdvertiseDataModel, AdvertiseitemModel, UserInfo, UserInfoModel } from "../model"
 
 const defaultad:AdvertiseDataModel = new AdvertiseDataModel({
   isshow:true,
@@ -64,4 +64,30 @@ export class  PerferenceHelpe{
     const  str = await store.get(COOKIE,'') as string
     return  str
   }
+
+
+  async setUserInfo(userInfo:UserInfo){
+    const store = await this.getStore()
+    store.put(USER_INFO,JSON.stringify(userInfo))
+    store.flush()
+  }
+
+  async getUserInfo():Promise<UserInfo>{
+    const store = await this.getStore()
+    const  userInfo = await store.get(USER_INFO,JSON.stringify(new UserInfoModel({} as UserInfo))) as string
+    return JSON.parse(userInfo) as UserInfo
+  }
+
+  async setAddressID(id:number){
+    const store = await this.getStore()
+    store.put(ADDRESSID,id)
+    store.flush()
+  }
+
+  async getAddressID():Promise<number>{
+    const store = await this.getStore()
+    const  id = await store.get(ADDRESSID,0) as number
+    return id
+  }
+
 }

@@ -6,6 +6,7 @@
     "pages/login/Login",
     "pages/Register/register",
     "pages/Use/User",
-    "pages/Address/Address"
+    "pages/Address/Address",
+    "pages/Brand/BrandInfo"
   ]
 }

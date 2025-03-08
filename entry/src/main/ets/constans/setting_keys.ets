@@ -16,3 +16,7 @@ export const ADVERTISE_WINDOW_NAME="ADVERTISE_WINDOW_NAME"
 export const USER_ID="USER_ID"
 //cookie
 export const COOKIE="COOKIE"
+//userino
+export const  USER_INFO="USER_INFO"
+//userino
+export const  ADDRESSID="ADDRESSID"

@@ -1,3 +1,7 @@
 export * from "./GoodCard"
 export * from "./NavBar"
 export * from "./CardItem"
+export * from "./TipofDelete"
+export * from "./Tip"
+export * from "./SelectAddressDialog"
+export * from "./Home/Home"

@@ -2,6 +2,7 @@
 import { APP_BOTTOM_HEIGHT, APP_TOP_HEIGHT } from '../constans'
 import { TabClass } from '../model'
 import { Mine } from '../component/My/Mine'
+import { Home } from '../component'
 
 
 @Entry
@@ -59,6 +60,8 @@ getTab(item:TabClass){
           TabContent(){
             if (item.name === "Mine") {
               Mine()
+            }else if (item.name ==="Home"){
+              Home()
             }
 
           }.tabBar(this.getTab(item))
