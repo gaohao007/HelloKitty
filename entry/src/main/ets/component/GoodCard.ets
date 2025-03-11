@@ -1,12 +1,24 @@
 import { BASE_URL } from "../constans"
 import { ProductItems, ProductItemsModel } from "../model/product"
-import { promptAction } from "@kit.ArkUI"
+import { promptAction, router } from "@kit.ArkUI"
+import { AddCartDialog } from "./addCartDialog"
 
 
 @Component
 export  struct GoodCard{
+
   @State
   products:ProductItems = new ProductItemsModel({} as ProductItems)
+
+  cartDialog:CustomDialogController = new CustomDialogController({
+    builder:AddCartDialog({spu_id:this.products.id}),
+    customStyle:true,
+    alignment:DialogAlignment.Bottom,
+    autoCancel:false
+  })
+
+
+
   build() {
    Row(){
       Image(BASE_URL+"/"+this.products.main_image)
@@ -39,6 +51,9 @@ export  struct GoodCard{
             Image($r("app.media.cart_12221332"))
               .width(24)
               .aspectRatio(1)
+              .onClick(()=>{
+                    this.cartDialog.open()
+              })
         }.width(120)
         .height(26)
         .justifyContent(FlexAlign.SpaceBetween)
@@ -55,6 +70,13 @@ export  struct GoodCard{
    .height(188)
     .padding(10)
     .borderRadius(20)
+    .onClick(()=>{
+      router.pushUrl({url:'pages/Product/ProductDetail',
+      params:{
+        id:this.products.id
+      }
+      })
+    })
   }
   onclickCallback:()=>void=()=>{}
 }

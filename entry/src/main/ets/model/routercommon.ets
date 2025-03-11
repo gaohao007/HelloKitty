@@ -6,4 +6,5 @@ export class RouterTransmintParams{
   username?:string=""
   phone?:string=""
   brandItem?:BrandItem=new BrandItemModel({} as BrandItem)
+  id?:number=0
 }

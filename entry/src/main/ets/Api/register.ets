@@ -11,3 +11,4 @@ export async  function verificationCode(){
 export async  function registerFuncall(data:RegisterParams){
   return await Request_API.post<null>( 'register' , data )
 }
+

@@ -2,7 +2,7 @@
 import { APP_BOTTOM_HEIGHT, APP_TOP_HEIGHT } from '../constans'
 import { TabClass } from '../model'
 import { Mine } from '../component/My/Mine'
-import { Home } from '../component'
+import { Cart, Classify, Home } from '../component'
 
 
 @Entry
@@ -26,7 +26,7 @@ struct Index {
 
     {
       title:"购物车",
-      name:"Message",
+      name:"Cart",
       icon:$r("app.media.cart")
     },
 
@@ -62,6 +62,10 @@ getTab(item:TabClass){
               Mine()
             }else if (item.name ==="Home"){
               Home()
+            }else if (item.name === "List"){
+              Classify()
+            }else if (item.name === "Cart"){
+              Cart()
             }
 
           }.tabBar(this.getTab(item))
@@ -70,9 +74,6 @@ getTab(item:TabClass){
           this.curentName=this.tabsData[index].name!
       })
       .animationDuration(200)
-
-
-
     }
     .padding({
       bottom:AppStorage.get<number>(APP_BOTTOM_HEIGHT)

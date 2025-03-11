@@ -1,15 +1,21 @@
-import { getCarouselData, getHotProducts } from "../../Api"
+import { getCarouselData, getHotProducts, getJiageProducts, getSalesCountProducts, getZongheProducts } from "../../Api"
 import { getBrandDatas } from "../../Api/brand"
 import { APP_TOP_HEIGHT, BASE_URL } from "../../constans"
-import { BrandItem, Carousel, ProductItems } from "../../model"
+import { BrandItem, Carousel, ProductItems, ProductRankItems } from "../../model"
 import { router } from "@kit.ArkUI"
 import { Log } from "@abner/log"
 import { GoodsCard } from "../GoodCarsTwo"
+import { ProductRankCard } from "../ProductRankCard"
 
 @Preview
 @Component
 
 export struct Home{
+
+  @State zonghe:boolean=true
+  @State jiage:boolean=false
+  @State xiaoliang:boolean=false
+ @State productRankItem:ProductRankItems[]=[]
 
   @State carousel:Carousel[]=[]
   @State brandList:BrandItem[]=[]
@@ -18,6 +24,8 @@ export struct Home{
     this.getCarouselData()
     this.getBrands()
     this.getHotProducts()
+
+    this.getProductRank()
   }
   async getCarouselData(){
     const  res = await getCarouselData()
@@ -27,12 +35,31 @@ export struct Home{
     const res = await getBrandDatas()
     this.brandList = res
   }
-
   async getHotProducts(){
     const res = await getHotProducts()
     this.isHotProducts = res.items
-    Log.info(JSON.stringify(this.isHotProducts))
   }
+  //综合排序
+  async getProductRank(){
+    const res = await getZongheProducts()
+    this.productRankItem=[]
+    this.productRankItem = res.items
+  }
+//价格排序
+  async getJiageRank(){
+    const res =await getJiageProducts()
+    this.productRankItem=[]
+    this.productRankItem=res.items
+  }
+  // 销量排序
+async getXiaoLiangRank(){
+     const res =  await getSalesCountProducts()
+    this.productRankItem=[]
+    this.productRankItem=res.items
+}
+
+
+
 
   scroller: Scroller = new Scroller()
   build() {
@@ -118,10 +145,66 @@ export struct Home{
           .width('100%')
           .height(180)
           .margin({top:10})
+          .scrollBar(BarState.Off)
 
+          Row(){
+            Text('综合')
+              .fontSize((this.zonghe && ! this.jiage && !this.xiaoliang)?18:16)
+              .fontWeight((this.zonghe && ! this.jiage && !this.xiaoliang)?700:500)
+              .fontColor((this.zonghe && ! this.jiage && !this.xiaoliang)?$r("app.color.primary"):$r("app.color.text_primary"))
+              .onClick(()=>{
+                this.zonghe = true
+                this.jiage=false
+                this.xiaoliang = false
+                this.getProductRank()
+              })
+            Text('价格')
+              .fontWeight((!this.zonghe &&  this.jiage && !this.xiaoliang)?700:500)
+              .fontSize((!this.zonghe && this.jiage && !this.xiaoliang)?18:16)
+              .fontColor((!this.zonghe && this.jiage && !this.xiaoliang)?$r("app.color.primary"):$r("app.color.text_primary"))
+              .onClick(()=>{
+                this.zonghe = false
+                this.jiage =true
+                this.xiaoliang = false
+                this.getXiaoLiangRank()
+              })
+            Text('销量')
+              .fontWeight((!this.zonghe && ! this.jiage && this.xiaoliang)?700:500)
+              .fontSize((!this.zonghe && ! this.jiage && this.xiaoliang)?18:16)
+              .fontColor((!this.zonghe && ! this.jiage && this.xiaoliang)?$r("app.color.primary"):$r("app.color.text_primary"))
+              .onClick(()=>{
+                this.zonghe = false
+                this.jiage =false
+                this.xiaoliang =true
+                this.getXiaoLiangRank()
+              })
+          }.width('100%')
+          .margin({left:30,right:30,top:20,bottom:20})
+          .borderRadius(6)
+          .padding(5)
+          .justifyContent(FlexAlign.SpaceAround)
+          .backgroundColor($r("app.color.background_page"))
+
+
+          Grid(){
+            ForEach(this.productRankItem,(items:ProductRankItems,index:number)=>{
+              GridItem(){
+                ProductRankCard({productRankItem:items})
+              }.width('100%')
+              .height(130)
+              .padding({top:5,bottom:5})
+              .backgroundColor($r("app.color.background_page"))
+              .borderRadius(10)
+            })
+          }
+          .columnsTemplate("1fr")
+          .rowsGap(20)
+          .width('100%')
         }
 
-}
+}.layoutWeight(1)
+      .scrollBar(BarState.Off)
+      .margin({bottom:20})
 
 
 

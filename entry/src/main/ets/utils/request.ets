@@ -1,21 +1,11 @@
 //提供接口的调用方法.//请求方法不同
 import { http } from "@kit.NetworkKit";
 import { ResponseDate } from "../model";
-import { promptAction, router } from "@kit.ArkUI";
+import { promptAction } from "@kit.ArkUI";
 import { PerferenceHelpe } from ".";
-import { Log } from "@abner/log";
+
 import { COOKIE } from "../constans";
 
-function dealwithcookie(str:string){
-  if (str.indexOf(';') !=-1) {
-    return str.split(';')[0]
-  }
-  return ''
-}
-
-class cookie{
-  cookie:string=''
-}
 
 export  class  Request_API{
 

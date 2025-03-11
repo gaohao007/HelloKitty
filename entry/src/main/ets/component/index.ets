@@ -5,3 +5,8 @@ export * from "./TipofDelete"
 export * from "./Tip"
 export * from "./SelectAddressDialog"
 export * from "./Home/Home"
+export * from "./ProductRankCard"
+export * from "./classify/classify"
+export * from "./classifyCard"
+
+export * from "./Cart/Cart"

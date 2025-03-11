@@ -7,6 +7,7 @@
     "pages/Register/register",
     "pages/Use/User",
     "pages/Address/Address",
-    "pages/Brand/BrandInfo"
+    "pages/Brand/BrandInfo",
+    "pages/Product/ProductDetail"
   ]
 }

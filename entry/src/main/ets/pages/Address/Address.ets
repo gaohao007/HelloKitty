@@ -11,7 +11,7 @@ import { AddUserAddress } from '../../component/AddUserAddress'
 
 @Entry
 @Component
-struct Address {
+ struct Address {
 confirm:CustomDialogController = new CustomDialogController({
   builder:Confirmdelete({
     message:"确定删除地址吗?",

@@ -20,3 +20,10 @@ export * from "./carousel"
 
 
 export * from "./brand"
+
+export * from "./category"
+
+export * from "./cart"
+export * from "./goods"
+
+export * from "./remark"
