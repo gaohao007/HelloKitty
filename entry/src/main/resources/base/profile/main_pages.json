@@ -8,6 +8,9 @@
     "pages/Use/User",
     "pages/Address/Address",
     "pages/Brand/BrandInfo",
-    "pages/Product/ProductDetail"
+    "pages/Product/ProductDetail",
+    "pages/lijigoumai/PayImmideate",
+    "pages/order/OrderPage",
+    "pages/remark/RemarkGoods"
   ]
 }

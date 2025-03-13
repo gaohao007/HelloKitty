@@ -107,8 +107,8 @@ async aboutToAppear() {
               },
                 confrimCallBackUpdateUserAddressIfo:async (data,address_ID:number)=>{
                 this.addAddressParams = data
-                  this.userAddressId = address_ID
-                  await this.updateAddress(this.usrid,this.addAddressParams,address_ID)
+               this.userAddressId = address_ID
+               await this.updateAddress(this.usrid,this.addAddressParams,address_ID)
 
                 },
                 updateDefault:async (uddd:number)=>{

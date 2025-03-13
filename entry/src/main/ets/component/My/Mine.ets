@@ -155,6 +155,24 @@ export struct Mine{
   }
 
   @Builder
+  orderStaussss(item:TabClass){
+    Column({space:5}){
+      Image(item.icon)
+        .width(24).aspectRatio(1)
+      Text(item.title)
+    }.onClick(async ()=>{
+      const user_id = await new PerferenceHelpe(getContext(this)).getUserID()
+      if (user_id!==0) {
+        router.pushUrl({url:"pages/order/OrderPage"})
+      }
+      else {
+        promptAction.showToast({message:"请你先登录!",alignment:Alignment.Center})
+        router.pushUrl({url:"pages/login/Login"})
+      }
+    })
+  }
+
+  @Builder
   orderStaus(item:TabClass){
     Column({space:5}){
       Image(item.icon)
@@ -176,9 +194,20 @@ export struct Mine{
       .justifyContent(FlexAlign.SpaceBetween)
       .alignItems(VerticalAlign.Center)
       .margin({top:15,bottom:15})
+      .onClick(async ()=>{
+          const user_id = await new PerferenceHelpe(getContext(this)).getUserID()
+        if (user_id!==0) {
+            router.pushUrl({url:"pages/order/OrderPage"})
+        }
+        else {
+          promptAction.showToast({message:"请你先登录!",alignment:Alignment.Center})
+          router.pushUrl({url:"pages/login/Login"})
+        }
+      })
+
     Row(){
         ForEach(this.tabsData,(items:TabClass)=>{
-          this.orderStaus(items)
+          this.orderStaussss(items)
         })
     }.width('100%')
       .justifyContent(FlexAlign.SpaceBetween)

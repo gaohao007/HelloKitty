@@ -12,7 +12,6 @@ export  class  Request_API{
   static readonly baseUrl:string ="http://10.0.2.2:5000/"
 
   static async request<T>(url:string="",data?:object,method:http.RequestMethod=http.RequestMethod.GET):Promise<T>{
-    console.log('------->apspaspapsaAPPSTR',JSON.stringify(AppStorage.get(COOKIE)))
     const  httpRequest = http.createHttp()
     const config:http.HttpRequestOptions ={
       method:method,

@@ -1,26 +1,48 @@
 
 import { deleteSomeOneCartItem, getCartData, isCancelOrSelect, updateCartQuantity } from "../../Api"
 import { APP_TOP_HEIGHT, BASE_URL } from "../../constans"
-import { CartItem, SelectOrCancleParams, UpdateCartquantity } from "../../model"
+import { CartItem,
+  CartItems,
+  CartItemsModel,
+  CreateOrderFromCart,
+  CreateOrderFromCartModel,
+  SelectOrCancleParams, UpdateCartquantity } from "../../model"
 import { PerferenceHelpe } from "../../utils"
-import { promptAction } from "@kit.ArkUI"
+import { promptAction, router } from "@kit.ArkUI"
+import { Log } from "@abner/log"
 
 @Component
 export struct Cart{
   @State user_id:number=0
   @State cartList:CartItem[]=[]
+  @State createOrderInCart:CreateOrderFromCart = new CreateOrderFromCartModel({} as CreateOrderFromCart )
+
+  async getList(){
+    const user_id = await new PerferenceHelpe(getContext(this)).getUserID()
+    if (user_id !==0) {
+      this.cartList=[]
+      const res = await getCartData(user_id)
+      this.cartList = res.items
+    }
+  }
+
+
+
   //总金额
   @State totalPrice:number=0
   @State clickEditText:boolean=false
   //数量
   @State quantity:UpdateCartquantity=new UpdateCartquantity(0)
  async  aboutToAppear(){
+
+
     this.getUserID()
    if (this.user_id !==0) {
      this.cartList=[]
      const res = await getCartData(this.user_id)
      this.cartList = res.items
    }
+   this.getList()
   }
   async getUserID(){
     const user_id = await new PerferenceHelpe(getContext(this)).getUserID()
@@ -153,12 +175,21 @@ async getTotalPrice(){
     Column(){
       Row().width('100%')
         .height(AppStorage.get(APP_TOP_HEIGHT))
-      Text('购物车')
-        .fontSize(24)
-        .fontWeight(700)
-        .width('100%')
-        .fontColor($r("app.color.white"))
-        .padding({left:20})
+      Row(){
+        Text('购物车')
+          .fontSize(24)
+          .fontWeight(700)
+          .fontColor($r("app.color.white"))
+          .padding({left:20})
+        Blank()
+        Image($r("app.media.shuaxin_000001")).aspectRatio(1).width(24)
+          .objectFit(ImageFit.Fill)
+          .margin({right:20})
+          .zIndex(100)
+          .onClick(()=>{
+            this.getList()
+          })
+      }.width('100%')
       Row(){
         Text(`共${this.cartList.length}件商品`)
           .fontSize(18)
@@ -174,6 +205,7 @@ async getTotalPrice(){
       }.width('100%')
       .padding({left:20,right:20})
       .margin({top:20})
+
       Scroll(){
         Column({space:20}){
             if (this.cartList.length>0){
@@ -218,8 +250,8 @@ async getTotalPrice(){
          .backgroundColor($r("app.color.primary"))
          .type(ButtonType.Normal)
          .borderRadius(10)
-         .onClick(()=>{
-           if (this.clickEditText){
+         .onClick(async ()=>{
+             if (this.clickEditText){
              AlertDialog.show({
                message:"确定删除这些选中的商品吗?",
                alignment:DialogAlignment.Center,
@@ -241,7 +273,39 @@ async getTotalPrice(){
                }
              })
            }else{
+              //去结算
+               const userId = await new PerferenceHelpe(getContext(this)).getUserID()
 
+               if (userId != 0) {
+                 this.createOrderInCart.user_id = userId
+                 const res = await getCartData(userId)
+                 const cartItems:CartItem[]=res.items
+                 if (cartItems.length>0) {
+                      const objItems : CartItems[]=[]
+                      for (let item of cartItems){
+                        if (item.selected ==1) {
+                          objItems.push({
+                            id: item.id,
+                            quantity:item.quantity,
+                            sku_id: item.sku_id
+                          })
+                        }
+                      }
+                           this.createOrderInCart.cart_items = objItems
+                   if (this.createOrderInCart.cart_items.length>=1) {
+                     router.pushUrl({url:"pages/lijigoumai/PayImmideate",
+                       params:{
+                         cartOrder:this.createOrderInCart,
+                         totalprice:this.totalPrice,
+                       }
+                     })
+                   }else {
+                     promptAction.showToast({message:"请选择商品"})
+                   }
+                 }
+               }else {
+                 router.pushUrl({url:"pages/login/Login"})
+               }
            }
          })
      }
@@ -255,6 +319,7 @@ async getTotalPrice(){
       .border({width:1,color:$r("app.color.background_divider")})
       .alignItems(VerticalAlign.Center)
     }
+    .zIndex(1)
     .width('100%')
     .height('100%')
     .linearGradient({

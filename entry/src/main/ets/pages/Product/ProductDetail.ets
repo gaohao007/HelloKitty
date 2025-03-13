@@ -4,6 +4,8 @@ import { promptAction, router } from '@kit.ArkUI'
 import {
   CreatCartParams,
   CreatCartParamsModel,
+  CreateOrderImmideate,
+  CreateOrderImmideateModel,
   ProductColors,
   ProductColorsModel,
   ProductDetailData, ProductDetailDataModel,
@@ -23,6 +25,12 @@ import { PerferenceHelpe } from '../../utils'
 @Entry
 @Component
 struct ProductDetail {
+
+  //直接生成订单
+  @State createOrderImmideate:CreateOrderImmideate =
+    new CreateOrderImmideateModel({} as CreateOrderImmideate)
+
+
   @State imgUrl:string = BASE_URL+"/"
   @State spu_id:number=0
   //价格
@@ -84,12 +92,14 @@ struct ProductDetail {
 
   @State
   skuInfo:SkuInfo | null=new SkuInfoModel({} as SkuInfo)
-
+@State totalPrice:number=0
  async getSkuInfo(){
    if (this.spu_id && this.sizeStr && this.colorStr) {
      const res = await getSkuInfo(this.spu_id,this.colorStr,this.sizeStr)
      this.skuInfo = res
      Log.info(JSON.stringify(res))
+     this.totalPrice = 0
+     this.totalPrice = res.price * this.count
    }
  }
 @State count:number=1
@@ -104,12 +114,13 @@ async getProductsRemark(){
     Log.info(JSON.stringify(this.remarks))
   }
 } 
-
+user_id:number=0
 //创建购物车
 @State createCartParams:CreatCartParams = new CreatCartParamsModel({} as CreatCartParams)
 
 async createCart(){
-    const userid = await new PerferenceHelpe(getContext(this)).getUserID()
+  const userid = await new PerferenceHelpe(getContext(this)).getUserID()
+  this.user_id = userid
     if (userid ==0){
       promptAction.showToast({message:'请先登录'})
       router.pushUrl({url:"pages/login/Login"})
@@ -276,6 +287,7 @@ build() {
            }.width('100%').margin({top:20})
            .height(120)
 
+
            Row(){
               Text('数量').fontSize(14).fontColor($r('app.color.text_secondary')).margin({right:20})
               Row(){
@@ -326,9 +338,13 @@ build() {
               }.border({width:1,color:$r('app.color.text_primary'),radius:6})
              .clip(true)
            }.width('100%').margin({top:20})
+
+
           Divider().strokeWidth(2)
             .color($r('app.color.background_divider'))
             .margin({top:20,bottom:20})
+
+
            Column({space:10}){
             Row({}){
               Text('该商品所属评价')
@@ -409,6 +425,26 @@ build() {
               .backgroundColor($r('app.color.primary'))
               .width('50%')
               .borderRadius({topRight:10,bottomRight:10})
+              .onClick(async ()=>{
+                if (this.sizeStr && this.colorStr) {
+                  if (this.skuInfo) {
+                    this.createOrderImmideate.sku_id = this.skuInfo.id
+                    this.createOrderImmideate.quantity = this.count
+                   const user_id =  await new PerferenceHelpe(getContext(this)).getUserID()
+                  this.createOrderImmideate.user_id = user_id
+                    this.totalPrice = this.skuInfo.price * this.count
+                  }
+                  router.pushUrl({
+                    url:"pages/lijigoumai/PayImmideate",
+                    params:{
+                      immideateOrder:this.createOrderImmideate,
+                      totalprice:this.totalPrice
+                    }
+                  })
+                }else {
+                  promptAction.showToast({message:"请选择尺寸和颜色",duration:2000,alignment:Alignment.Center,textColor:"#f03867"})
+                }
+              })
           }.width('60%')
       }.width('100%')
       .height(120)

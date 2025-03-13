@@ -10,8 +10,7 @@ import { PerferenceHelpe } from "../utils"
 export struct AddUserAddress{
 @State
 // 是否是修改地址
-  isUpdateUserAddressInfo:boolean=false
-
+   isUpdateUserAddressInfo:boolean=false
   selectAddressLayer:CustomDialogController =new CustomDialogController({
     builder:SelectAddressDialog({
       confrimCallback:(provice:string,city:string,area:string)=>{

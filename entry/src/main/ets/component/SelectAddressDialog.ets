@@ -8,7 +8,6 @@ import { AddressAreaData } from "../model"
 export struct SelectAddressDialog{
 
 
-
   customController:CustomDialogController
   confrimCallback:(provice:string,city:string,area:string)=>void=()=>{}
   @State provice:string=""

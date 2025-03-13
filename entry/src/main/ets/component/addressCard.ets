@@ -7,7 +7,7 @@ import { AddUserAddress } from "./AddUserAddress"
 export struct AddressCard{
   @State address:AddressItems=new AddressItemsModel({} as AddressItems)
   deleteUserSomeoneAddress:(id:number)=>void=()=>{}
-  confrimCallBackUpdateUserAddressIfo:(data:AddAddressParams,addressId:number)=>void=()=>{
+   confrimCallBackUpdateUserAddressIfo:(data:AddAddressParams,addressId:number)=>void=()=>{
          this.updateUserAddressInfo.close()
   }
 
