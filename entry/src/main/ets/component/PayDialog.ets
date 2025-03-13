@@ -1,4 +1,4 @@
-import { promptAction } from "@kit.ArkUI"
+import { promptAction, router } from "@kit.ArkUI"
 
 
 @Component
@@ -49,6 +49,7 @@ export struct PayDialog{
           .width(20).aspectRatio(1).margin({right:20})
           .onClick(()=>{
             this.customController.close()
+            router.pushUrl({url:"pages/order/OrderPage"})
           })
       }.width('100%')
       .border({width:{bottom:1},color:$r("app.color.background_divider")})

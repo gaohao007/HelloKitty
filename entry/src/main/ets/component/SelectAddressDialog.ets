@@ -84,7 +84,6 @@ export struct SelectAddressDialog{
                                   this.area = item.name
                                 }
                               }
-                              
                               //第四点击行不行
                               if (item.parent_id !==0&&this.area ==="市辖区"  &&this.provice !==""  && this.city !=="" ) {
                                 this.addressAreaDataList=[]
