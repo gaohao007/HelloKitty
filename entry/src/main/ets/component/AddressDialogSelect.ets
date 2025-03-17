@@ -1,4 +1,5 @@
 import { getUserAddressList, insertNewAddress } from "../Api"
+import { differentOrderStatus } from "../Api/order"
 import { AddAddressParams, AddAddressParamsModel, AddressItems, AddressItemsModel } from "../model"
 import { PerferenceHelpe } from "../utils"
 import { AddAddressDialog } from "./AddAddressDialog"
@@ -38,18 +39,22 @@ export struct AddressDialogSelect{
   @State addressList:AddressItems[] = []
   usrid:number=0
   addreessId:number=0
-  @State items:AddressItems =  new AddressItemsModel({} as AddressItems)
 
+  @State items:AddressItems =  new AddressItemsModel({} as AddressItems)
+  @State isSelectedAddress:boolean =true
+  @State isSelectedIndex:number=0
   async aboutToAppear() {
     const useid = await new PerferenceHelpe(getContext(this)).getUserID()
     const result = await getUserAddressList(useid)
     this.addressList = result.items
     this.usrid = useid
+    if (this.isSelectedAddress && this.addressList.length>0 && this.isSelectedIndex==0) {
+      this.items = this.addressList[this.isSelectedIndex]
+    }
   }
 
 
-  @State isSelectedAddress:boolean =false
-  @State isSelectedIndex:number=0
+
   @Builder
   getListItem(item:AddressItems,index:number){
     Row({space:5}){

@@ -16,7 +16,7 @@ export async  function getSkuInfoDetail(id:number){
 }
 //从购物车中创建订单
 export async  function createOrderFromCart(data:CreateOrderFromCart){
-  return await Request_API.post<OrderSuccessData>(`api/orders`,data)
+  return await Request_API.post<OrderSuccessData[]>(`api/orders`,data)
 }
 
 //支付成功

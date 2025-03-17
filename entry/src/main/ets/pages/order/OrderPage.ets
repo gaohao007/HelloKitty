@@ -26,7 +26,7 @@ struct OrderPage {
     name:"daishouhuo"
   },
   {
-    title:"待评价",
+    title:"评价",
     name:"remark"
   }
 ]

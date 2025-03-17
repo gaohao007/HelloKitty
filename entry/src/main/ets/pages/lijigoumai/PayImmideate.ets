@@ -74,7 +74,7 @@ async getSkuDetai(id:number){
      this.skuInfoList.push(res)
 }
 
-  @State orderSuccess:OrderSuccessData= new OrderSuccessDataModel({} as OrderSuccessData)
+  @State orderSuccess:OrderSuccessData[]=[]
   
   @State totalPrice:number=0
   @State payOrderAddressId :PayOrder = new PayOrderModel({} as PayOrder)
@@ -87,27 +87,29 @@ async getSkuDetai(id:number){
       totalPrice:this.payMoney,
     confrimCallback:async ()=>{
         const user_id =await new PerferenceHelpe(getContext(this)).getUserID()
-        if (user_id !==0 && this.orderSuccess.order_id !==0  && this.addressItems.id !==0) {
-              this.payOrderAddressId.address_id = this.addressItems.id
-              const res = await paySuccess(this.payOrderAddressId,user_id,this.orderSuccess.order_id)
-              this.paySuccessData = res
 
-          console.log('------->?paySuccessData',JSON.stringify(this.paySuccessData))
-          promptAction.showToast({message:"支付成功"})
-          router.pushUrl({url:"pages/order/OrderPage"})
-          this.payDialog.close()
-
-      }else {
-          promptAction.showToast({message:"请先登录"})
+      if (user_id !==0){
+        for(let v of this.orderSuccess){
+          if (v.order_id !=0 && this.addressItems.id !=0) {
+            this.payOrderAddressId.address_id = this.addressItems.id
+            const res = await paySuccess(this.payOrderAddressId,user_id,v.order_id)
+            this.paySuccessData = res
+            console.log('------->?paySuccessData',JSON.stringify(this.paySuccessData))
+            promptAction.showToast({message:"支付成功"})
+            router.pushUrl({url:"pages/order/OrderPage"})
+            this.payDialog.close()
+          }
         }
+      }else {
+        promptAction.showToast({message:"请先登录"})
+        router.replaceUrl({url:"pages/login/Login"})
+      }
     }
     }),
     alignment:DialogAlignment.Bottom,
     customStyle:true,
     autoCancel:false
   })
-
-
 
 
   build() {
@@ -285,7 +287,7 @@ async getSkuDetai(id:number){
         && this.orderImmideate.address_id !== undefined)
     {
       const res = await createOrderImmideate(this.orderImmideate)
-      this.orderSuccess = res
+      this.orderSuccess.push(res)
       promptAction.showToast({message:"下单成功"})
       this.payDialog.open()
     }
@@ -297,8 +299,8 @@ async getSkuDetai(id:number){
         && this.createOrder.address_id !== undefined
     ) {
       const res = await createOrderFromCart(this.createOrder)
-      this.orderSuccess = res
-      this.payDialog.open()
+       this.orderSuccess = res
+       this.payDialog.open()
       promptAction.showToast({message:"下单成功"})
     }
   }

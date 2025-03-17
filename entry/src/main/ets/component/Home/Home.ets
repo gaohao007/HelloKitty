@@ -1,7 +1,7 @@
 import { getCarouselData, getHotProducts, getJiageProducts, getSalesCountProducts, getZongheProducts } from "../../Api"
 import { getBrandDatas } from "../../Api/brand"
 import { APP_TOP_HEIGHT, BASE_URL } from "../../constans"
-import { BrandItem, Carousel, ProductItems, ProductRankItems } from "../../model"
+import { BrandItem, Carousel, ListDataSource, ProductItems, ProductRankItems } from "../../model"
 import { router } from "@kit.ArkUI"
 import { Log } from "@abner/log"
 import { GoodsCard } from "../GoodCarsTwo"
@@ -12,20 +12,30 @@ import { ProductRankCard } from "../ProductRankCard"
 
 export struct Home{
 
+  lazyDataSource:ListDataSource = new ListDataSource()
+
   @State zonghe:boolean=true
   @State jiage:boolean=false
   @State xiaoliang:boolean=false
- @State productRankItem:ProductRankItems[]=[]
+
 
   @State carousel:Carousel[]=[]
   @State brandList:BrandItem[]=[]
   @State isHotProducts:ProductItems[]=[]
-  aboutToAppear() {
+
+  @State
+  @Watch("updateDataSource")
+  productRankItem:ProductRankItems[]=[]
+  updateDataSource(){
+    this.lazyDataSource.reloadData(this.productRankItem)
+  }
+
+ async  aboutToAppear() {
     this.getCarouselData()
     this.getBrands()
     this.getHotProducts()
-
-    this.getProductRank()
+    await  this.getProductRank()
+    this.updateDataSource()
   }
   async getCarouselData(){
     const  res = await getCarouselData()
@@ -73,6 +83,9 @@ async getXiaoLiangRank(){
         .fontWeight(600)
         .width("100%")
       Search({placeholder:"想要找什么商品呢?"})
+        .onClick(()=>{
+          router.pushUrl({url:"pages/search/searchPage"})
+        })
 
       Scroll(this.scroller){
         Column(){
@@ -187,7 +200,7 @@ async getXiaoLiangRank(){
 
 
           Grid(){
-            ForEach(this.productRankItem,(items:ProductRankItems,index:number)=>{
+            LazyForEach(this.lazyDataSource,(items:ProductRankItems,index:number)=>{
               GridItem(){
                 ProductRankCard({productRankItem:items})
               }.width('100%')
@@ -196,7 +209,7 @@ async getXiaoLiangRank(){
               .backgroundColor($r("app.color.background_page"))
               .borderRadius(10)
             })
-          }
+          }.cachedCount(4)
           .columnsTemplate("1fr")
           .rowsGap(20)
           .width('100%')

@@ -10,7 +10,7 @@ import { Cart, Classify, Home } from '../component'
 struct Index {
 
 
-  @State curentName:string |null ="Mine"
+  @State curentName:string  ="Home"
   @State tabsData:TabClass[]=[
     {
       title:"首页",
@@ -55,7 +55,7 @@ getTab(item:TabClass){
       Row().width('100%')
         .height(AppStorage.get(APP_TOP_HEIGHT))
         .backgroundColor($r('app.color.white'))
-      Tabs({barPosition:BarPosition.End,index:3}){
+      Tabs({barPosition:BarPosition.End,index:0}){
         ForEach(this.tabsData,(item:TabClass)=>{
           TabContent(){
             if (item.name === "Mine") {

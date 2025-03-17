@@ -101,7 +101,8 @@ export struct AllOrders{
           if (this.orderList.length>0){
             ForEach(this.orderList,(item:UserOrderItems,index:number)=>{
               ListItem(){
-                OrderItems({orderItem:item,
+                OrderItems({
+                  orderItem:item,
                   cancleOrder:(user_id,order_id)=>{
                     this.cancleOrder(user_id,order_id)
                   },

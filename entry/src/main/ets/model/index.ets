@@ -29,3 +29,5 @@ export * from "./goods"
 export * from "./remark"
 export * from "./sku"
 export * from "./order"
+
+export * from "./base_dataSource"

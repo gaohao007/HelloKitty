@@ -17,6 +17,9 @@ export struct Cart{
   @State cartList:CartItem[]=[]
   @State createOrderInCart:CreateOrderFromCart = new CreateOrderFromCartModel({} as CreateOrderFromCart )
 
+
+
+
   async getList(){
     const user_id = await new PerferenceHelpe(getContext(this)).getUserID()
     if (user_id !==0) {
@@ -34,8 +37,6 @@ export struct Cart{
   //数量
   @State quantity:UpdateCartquantity=new UpdateCartquantity(0)
  async  aboutToAppear(){
-
-
     this.getUserID()
    if (this.user_id !==0) {
      this.cartList=[]
@@ -56,6 +57,9 @@ export struct Cart{
           this.totalPrice += item.price*item.quantity
         }
       })
+    }else {
+      promptAction.showToast({ message:"请先登录",duration:4000,alignment:Alignment.Center })
+      router.replaceUrl({url:"pages/login/Login"})
     }
   }
 //获取价格
@@ -151,6 +155,7 @@ async getTotalPrice(){
                       action:()=>{
                         this.deleteSomeoneCartItem(item.id)
                         this.getTotalPrice()
+                        this.getList()
                       }
                     }
                   })
@@ -188,6 +193,7 @@ async getTotalPrice(){
           .zIndex(100)
           .onClick(()=>{
             this.getList()
+            this.getTotalPrice()
           })
       }.width('100%')
       Row(){
@@ -302,6 +308,9 @@ async getTotalPrice(){
                    }else {
                      promptAction.showToast({message:"请选择商品"})
                    }
+                 }else {
+                   promptAction.showToast({message:"购物车空空如也"})
+                   router.pushUrl({url:"pages/Index"})
                  }
                }else {
                  router.pushUrl({url:"pages/login/Login"})

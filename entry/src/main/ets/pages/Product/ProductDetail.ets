@@ -43,10 +43,10 @@ struct ProductDetail {
   @State isShoucang:boolean=false
   //颜色被选中,默认第一个颜色被选中
   @State colorCurrentIndex:number=0
-  @State isSelectColor:boolean=false
+  @State isSelectColor:boolean=true
   //尺寸选择下标
   @State sizeCurrentIndex:number=0
-  @State isSelectSize:boolean=false
+  @State isSelectSize:boolean=true
 
 
   @State sizeStr:string=""
@@ -67,9 +67,15 @@ struct ProductDetail {
       this.price = this.spuDetailData.skus[0].price
       const result = await getColorsSpu(res.id)
       this.colors = result
+      this.colorStr = this.colors.colors[this.colorCurrentIndex]
       this.getProductsRemark()
+
     }
-    this.getSizeDatas()
+    console.log('---->     this.colorStr = this.colors.colors[this.colorCurrentIndex]',JSON.stringify(this.colorStr))
+      await this.getSizeDatas()
+       if (this.colorStr && this.sizeStr) {
+           this.getSkuInfo()
+ }
   }
 
   //
@@ -87,6 +93,7 @@ struct ProductDetail {
     if (this.spu_id) {
       const res = await getSizes(this.spu_id)
       this.sizes = res
+      this.sizeStr = this.sizes.sizes[this.sizeCurrentIndex]
     }
   }
 
@@ -105,7 +112,7 @@ struct ProductDetail {
 @State count:number=1
 //评论
 @State remarks:remarkItem[]=[]
-  
+
  
 async getProductsRemark(){
   if (this.spu_id) {

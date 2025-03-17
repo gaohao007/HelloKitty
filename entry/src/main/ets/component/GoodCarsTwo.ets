@@ -19,7 +19,7 @@ export struct GoodsCard{
 
   build() {
     Column({space:8}){
-      Image(BASE_URL+"/"+this.products.main_image)
+      Image(BASE_URL+"/"+this.products?.main_image)
         .aspectRatio(1).width(100)
         .objectFit(ImageFit.Fill)
         .borderRadius(12)
@@ -33,7 +33,7 @@ export struct GoodsCard{
       Row(){
         Text(){
           Span("￥").fontSize(14).fontWeight(600)
-          Span(this.products.skus[0].price.toFixed(2))
+          Span(this.products.skus[0]?.price.toFixed(2))
             .fontSize(18).fontWeight(700)
             .fontColor('#f32b80')
         }

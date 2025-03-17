@@ -20,3 +20,4 @@ export const COOKIE="COOKIE"
 export const  USER_INFO="USER_INFO"
 //userino
 export const  ADDRESSID="ADDRESSID"
+export const  SEARCH_LIST="SEARCH_LIST"

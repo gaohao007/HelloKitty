@@ -1,4 +1,8 @@
-import { ColorImages, ProductColors, ProductDetailData, ProductRank, Products, SizeParams, Sizes,
+import { ColorImages, ProductColors, ProductDetailData,
+  ProductItemsModel,
+  ProductRank, Products,
+  ProductsModel,
+  SizeParams, Sizes,
   SkuInfo } from "../model";
 import { Request_API } from "../utils";
 

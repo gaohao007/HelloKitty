@@ -11,6 +11,7 @@
     "pages/Product/ProductDetail",
     "pages/lijigoumai/PayImmideate",
     "pages/order/OrderPage",
-    "pages/remark/RemarkGoods"
+    "pages/remark/RemarkGoods",
+    "pages/search/searchPage"
   ]
 }

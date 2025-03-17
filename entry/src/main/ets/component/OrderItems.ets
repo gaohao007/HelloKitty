@@ -22,9 +22,13 @@ export struct OrderItems{
   build() {
     Column({space:10}){
         Row(){
+          Text(this.orderItem.items[0].sku_name)
+            .constraintSize({minWidth:100,maxWidth:200})
+            .maxLines(1)
+            .textOverflow({overflow:TextOverflow.Ellipsis})
           Blank()
           Text(this.getStringfromStatus(this.orderItem.status))
-        }.width('100%').padding({right:20,top:20})
+        }.width('100%').padding({right:20,top:20,left:20})
       ForEach(this.userSkuItems,(items:UserOrderItemsItems)=>{
         Row({space:15}){
             Image(BASE_URL+"/"+items.spu_main_image)

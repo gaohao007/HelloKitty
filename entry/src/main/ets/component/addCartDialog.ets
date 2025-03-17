@@ -23,24 +23,15 @@ export struct  AddCartDialog{
 
   //颜色被选中,默认第一个颜色被选中
   @State colorCurrentIndex:number=0
-  @State isSelectColor:boolean=false
+  @State isSelectColor:boolean=true
   //尺寸选择下标
   @State sizeCurrentIndex:number=0
-  @State isSelectSize:boolean=false
+  @State isSelectSize:boolean=true
 
 
 
 
-  @State
-  skuInfo:SkuInfo | null=new SkuInfoModel({} as SkuInfo)
 
-  async getSkuInfo(){
-    if (this.spu_id && this.sizeStr && this.colorStr) {
-      const res = await getSkuInfo(this.spu_id,this.colorStr,this.sizeStr)
-      this.skuInfo = res
-      Log.info(JSON.stringify(res))
-    }
-  }
 
 
 //spu详细
@@ -60,7 +51,12 @@ export struct  AddCartDialog{
       this.price = this.spuDetailData.skus[0].price
       const result = await getColorsSpu(this.spu_id)
       this.colors = result
-      this.getSizeDatas()
+     await this.getSizeDatas()
+     this.sizeStr = this.sizes.sizes[this.sizeCurrentIndex]
+     this.colorStr = this.colors.colors[this.colorCurrentIndex]
+      console.log('颜色详细',this.sizeStr)
+      console.log('颜色详细',this.colorStr)
+      await this.getSkuInfo()
     }
   }
 
@@ -69,6 +65,16 @@ export struct  AddCartDialog{
     if (this.spu_id) {
       const res = await getSizes(this.spu_id)
       this.sizes = res
+    }
+  }
+
+  @State
+  skuInfo:SkuInfo | null=new SkuInfoModel({} as SkuInfo)
+
+  async getSkuInfo(){
+    if (this.spu_id && this.sizeStr && this.colorStr) {
+      const res = await getSkuInfo(this.spu_id,this.colorStr,this.sizeStr)
+      this.skuInfo = res
     }
   }
 
@@ -83,7 +89,7 @@ export struct  AddCartDialog{
       router.pushUrl({url:"pages/login/Login"})
       return
     }
-    if ( this.spu_id && this.skuInfo ) {
+    if ( this.spu_id && this.skuInfo && this.sizeStr && this.colorStr && this.createCartParams) {
       this.createCartParams.sku_id = this.skuInfo.id
       this.createCartParams.quantity = this.count
       await createCartItems(userid,this.createCartParams)

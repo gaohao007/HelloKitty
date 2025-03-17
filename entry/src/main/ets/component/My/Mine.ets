@@ -105,7 +105,7 @@ export struct Mine{
             .fontWeight(600)
             .onClick(()=>{
               if (!this.isLogin) {
-                router.pushUrl({url:"pages/login/Login"})
+                router.replaceUrl({url:"pages/login/Login"})
               }
             })
 
@@ -167,7 +167,7 @@ export struct Mine{
       }
       else {
         promptAction.showToast({message:"请你先登录!",alignment:Alignment.Center})
-        router.pushUrl({url:"pages/login/Login"})
+        router.replaceUrl({url:"pages/login/Login"})
       }
     })
   }
@@ -201,7 +201,7 @@ export struct Mine{
         }
         else {
           promptAction.showToast({message:"请你先登录!",alignment:Alignment.Center})
-          router.pushUrl({url:"pages/login/Login"})
+          router.replaceUrl({url:"pages/login/Login"})
         }
       })
 

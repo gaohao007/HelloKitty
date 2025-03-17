@@ -1,6 +1,6 @@
 import { Context } from "@kit.AbilityKit"
 import { preferences } from "@kit.ArkData"
-import { ADDRESSID, ADVERTISEMNET_KEY, ADVERTISE_KEY, COOKIE, USER_ID, USER_INFO } from "../constans"
+import { ADDRESSID, ADVERTISEMNET_KEY, ADVERTISE_KEY, COOKIE, SEARCH_LIST, USER_ID, USER_INFO } from "../constans"
 import { AdvertiseData, AdvertiseDataModel, AdvertiseitemModel, UserInfo, UserInfoModel } from "../model"
 
 const defaultad:AdvertiseDataModel = new AdvertiseDataModel({
@@ -90,4 +90,15 @@ export class  PerferenceHelpe{
     return id
   }
 
+  async  setSearchText(searchingList:string[]){
+    const store = await this.getStore()
+    store.put(SEARCH_LIST,JSON.stringify(searchingList))
+    store.flush()
+  }
+
+  async getSearchText():Promise<string[]>{
+    const store = await this.getStore()
+    const  searchingList = await store.get(SEARCH_LIST,JSON.stringify([])) as string
+    return JSON.parse(searchingList)
+  }
 }
